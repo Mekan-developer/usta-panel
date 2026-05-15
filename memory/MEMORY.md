@@ -1,0 +1,3 @@
+- [User role](user_role.md) — Mekan, Laravel senior dev, project usta-panel, Russian + strict architecture rules
+- [Portfolio project](project_portfolio.md) — building public portfolio on `/`, multilang tk/ru/en, single global private-projects password
+- [Handoff bundle](reference_handoff.md) — Portfolio.html + README.md handoff is the design spec for the public page
