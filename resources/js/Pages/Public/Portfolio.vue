@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { Head, Link } from '@inertiajs/vue3'
+import { Head } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
 import { usePortfolioTheme } from '@/composables/usePortfolioTheme'
 
@@ -10,7 +10,6 @@ import PfSkills from '@/Components/Portfolio/PfSkills.vue'
 import PfTimeline from '@/Components/Portfolio/PfTimeline.vue'
 import PfProjects from '@/Components/Portfolio/PfProjects.vue'
 import PfContact from '@/Components/Portfolio/PfContact.vue'
-import PfIcon from '@/Components/Portfolio/PfIcon.vue'
 
 const props = defineProps({
     settings:    { type: Object, required: true },
@@ -48,10 +47,6 @@ const copy = computed(() =>
             <div class="pf-container">
                 <div class="pf-foot-inner">
                     <span class="pf-foot-copy">{{ copy }}</span>
-                    <Link :href="route('login')" class="pf-foot-admin">
-                        <PfIcon name="gear" :size="14" />
-                        <span>{{ t('portfolio_public.footer.admin') }}</span>
-                    </Link>
                 </div>
             </div>
         </footer>

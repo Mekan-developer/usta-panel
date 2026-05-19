@@ -57,6 +57,13 @@ const navItems = [
         ],
     },
     {
+        labelKey: 'layout.nav.messages',
+        routeName: 'dashboard.messages.index',
+        routePattern: 'dashboard.messages.*',
+        iconPath: 'M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75',
+        badge: true,
+    },
+    {
         labelKey: 'layout.nav.learning',
         routeName: 'dashboard.learning.index',
         routePattern: 'dashboard.learning.*',
@@ -204,7 +211,13 @@ function logout() {
                         <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" :d="item.iconPath" />
                         </svg>
-                        {{ t(item.labelKey) }}
+                        <span class="flex-1">{{ t(item.labelKey) }}</span>
+                        <span
+                            v-if="item.badge && $page.props.unread_messages_count > 0"
+                            class="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-xs font-bold text-white"
+                        >
+                            {{ $page.props.unread_messages_count }}
+                        </span>
                     </Link>
                 </template>
             </nav>

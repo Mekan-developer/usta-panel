@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\Repositories\ContactMessageRepositoryInterface;
+use App\Mail\ContactMessageConfirmation;
 use App\Mail\ContactMessageReceived;
 use App\Models\ContactMessage;
 use Illuminate\Support\Collection;
@@ -26,7 +27,7 @@ class ContactMessageService
     }
 
     /**
-     * @param array{name: string, email: string, message: string} $data
+     * @param  array{name: string, email: string, message: string}  $data
      */
     public function store(array $data): ContactMessage
     {
@@ -34,6 +35,9 @@ class ContactMessageService
 
         Mail::to(config('mail.from.address'))
             ->queue(new ContactMessageReceived($message));
+
+        Mail::to($message->email)
+            ->queue(new ContactMessageConfirmation($message));
 
         return $message;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\ContactMessage;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -37,6 +38,9 @@ class HandleInertiaRequests extends Middleware
             'locale' => session('locale', config('app.locale', 'ru')),
             'notification' => session('notification'),
             'app_name' => config('projectSettings.app_name', config('app.name')),
+            'unread_messages_count' => $request->user()
+                ? ContactMessage::where('is_read', false)->count()
+                : 0,
         ];
     }
 }

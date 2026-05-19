@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useForm } from '@inertiajs/vue3'
 import { useLocalized } from '@/composables/useLocalized'
 import PfIcon from './PfIcon.vue'
 
@@ -8,16 +9,27 @@ const props = defineProps({
     settings: { type: Object, required: true },
 })
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const { pick } = useLocalized()
 
-const form = ref({ name: '', email: '', msg: '' })
 const sent = ref(false)
 
+const form = useForm({
+    name: '',
+    email: '',
+    message: '',
+    locale: locale.value,
+})
+
 function submit() {
-    sent.value = true
-    form.value = { name: '', email: '', msg: '' }
-    setTimeout(() => { sent.value = false }, 3500)
+    form.locale = locale.value
+    form.post(route('portfolio.contact'), {
+        onSuccess: () => {
+            sent.value = true
+            form.reset()
+            setTimeout(() => { sent.value = false }, 3500)
+        },
+    })
 }
 
 const contacts = computed(() => [
@@ -85,17 +97,20 @@ const socials = computed(() => [
                     <div class="pf-fg">
                         <label class="pf-fl">{{ t('portfolio_public.contact.name') }}</label>
                         <input v-model="form.name" class="pf-fi" required />
+                        <span v-if="form.errors.name" style="color:var(--acc);font-size:0.8rem">{{ form.errors.name }}</span>
                     </div>
                     <div class="pf-fg">
                         <label class="pf-fl">{{ t('portfolio_public.contact.email') }}</label>
                         <input v-model="form.email" type="email" class="pf-fi" required />
+                        <span v-if="form.errors.email" style="color:var(--acc);font-size:0.8rem">{{ form.errors.email }}</span>
                     </div>
                     <div class="pf-fg">
                         <label class="pf-fl">{{ t('portfolio_public.contact.message') }}</label>
-                        <textarea v-model="form.msg" class="pf-fi" required></textarea>
+                        <textarea v-model="form.message" class="pf-fi" required></textarea>
+                        <span v-if="form.errors.message" style="color:var(--acc);font-size:0.8rem">{{ form.errors.message }}</span>
                     </div>
-                    <button type="submit" class="pf-btn-p" style="width: 100%; font-size: 0.92rem;">
-                        {{ sent ? t('portfolio_public.contact.sent') : t('portfolio_public.contact.send') }}
+                    <button type="submit" :disabled="form.processing" class="pf-btn-p" style="width: 100%; font-size: 0.92rem;">
+                        {{ sent ? t('portfolio_public.contact.sent') : form.processing ? '...' : t('portfolio_public.contact.send') }}
                     </button>
                 </form>
             </div>

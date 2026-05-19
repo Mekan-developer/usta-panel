@@ -31,7 +31,7 @@ const links = [
     <nav class="pf-nav" :class="{ 'is-scrolled': scrolled }">
         <div class="pf-container">
             <div class="pf-nav-inner">
-                <a href="#hero" class="pf-logo">alex<em>.</em>dev</a>
+                <a href="#hero" class="pf-logo">mekan<em>.</em>dev</a>
 
                 <ul class="pf-nav-links">
                     <li v-for="link in links" :key="link.id">

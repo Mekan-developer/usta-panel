@@ -16,6 +16,7 @@ const messages = {
                 portfolio_info: 'Инфо страницы',
                 portfolio_settings: 'Настройки',
                 learning: 'Моё обучение',
+                messages: 'Сообщения',
                 profile: 'Профиль',
             },
             header: {
@@ -197,6 +198,15 @@ const messages = {
                 uploading: 'Загрузка...',
             },
         },
+        messages: {
+            title: 'Сообщения',
+            empty: 'Сообщений пока нет',
+            unread: 'Непрочитанное',
+            from: 'От',
+            reply: 'Ответить',
+            delete: 'Удалить',
+            confirm_delete: 'Удалить это сообщение?',
+        },
         learning: {
             title: 'Моё обучение',
             subtitle: 'Отслеживай прогресс — видь рост',
@@ -305,6 +315,7 @@ const messages = {
                 portfolio_info: 'Sahypa maglumatlary',
                 portfolio_settings: 'Sazlamalar',
                 learning: 'Meniň öwrenişim',
+                messages: 'Hatlar',
                 profile: 'Profil',
             },
             header: {
@@ -486,6 +497,15 @@ const messages = {
                 uploading: 'Ýüklenýär...',
             },
         },
+        messages: {
+            title: 'Hatlar',
+            empty: 'Hat ýok',
+            unread: 'Okalmadyk',
+            from: 'Kimden',
+            reply: 'Jogap ber',
+            delete: 'Poz',
+            confirm_delete: 'Bu haty pozmak isleýärsiňizmi?',
+        },
         learning: {
             title: 'Meniň öwrenişim',
             subtitle: 'Ösüşiňi yzarla — netijeleriňi gör',
@@ -594,6 +614,7 @@ const messages = {
                 portfolio_info: 'Page Info',
                 portfolio_settings: 'Settings',
                 learning: 'My Learning',
+                messages: 'Messages',
                 profile: 'Profile',
             },
             header: {
@@ -612,6 +633,15 @@ const messages = {
             },
             recent_servers: 'Recent servers',
             no_servers: 'No servers',
+        },
+        messages: {
+            title: 'Messages',
+            empty: 'No messages yet',
+            unread: 'Unread',
+            from: 'From',
+            reply: 'Reply',
+            delete: 'Delete',
+            confirm_delete: 'Delete this message?',
         },
         learning: {
             title: 'My Learning',

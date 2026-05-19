@@ -14,6 +14,7 @@ use App\Models\Project;
 use App\Services\ContactMessageService;
 use App\Support\PortfolioSettings;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -69,11 +70,11 @@ class PublicPortfolioController extends Controller
         ]);
     }
 
-    public function sendMessage(StoreContactMessageRequest $request): JsonResponse
+    public function sendMessage(StoreContactMessageRequest $request): RedirectResponse
     {
         $this->contactMessages->store($request->validated());
 
-        return response()->json(['ok' => true]);
+        return back();
     }
 
     /**
