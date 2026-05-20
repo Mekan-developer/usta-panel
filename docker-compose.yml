@@ -51,6 +51,8 @@ services:
     depends_on:
       app:
         condition: service_healthy
+      reverb:
+        condition: service_started
     networks:
       - usta
 
