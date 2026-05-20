@@ -1,4 +1,4 @@
-# ── Stage 1: Composer dependencies ────────────────────────────────────────────
+# ── Stage 1: PHP dependencies ─────────────────────────────────────────────────
 FROM composer:2 AS vendor
 
 WORKDIR /app
@@ -10,10 +10,9 @@ RUN composer install \
         --prefer-dist \
         --ignore-platform-reqs
 
-# ── Stage 2: build frontend assets ────────────────────────────────────────────
+# ── Stage 2: Frontend assets ───────────────────────────────────────────────────
 FROM node:20-alpine AS assets
 
-# VITE_ vars are baked into the bundle at build time
 ARG VITE_APP_NAME="Usta panel"
 ARG VITE_REVERB_APP_KEY
 ARG VITE_REVERB_HOST=localhost
@@ -24,13 +23,13 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --prefer-offline
 COPY . .
-# Ziggy needs vendor/ to generate route definitions
 COPY --from=vendor /app/vendor ./vendor
 RUN npm run build
 
 # ── Stage 3: PHP runtime ───────────────────────────────────────────────────────
 FROM php:8.3-fpm-alpine
 
+# Runtime libs (stay in image)
 RUN apk add --no-cache \
         freetype-dev \
         libjpeg-turbo-dev \
@@ -39,24 +38,24 @@ RUN apk add --no-cache \
         libzip-dev \
         oniguruma-dev \
         sqlite-dev \
-        autoconf \
-        g++ \
-        make \
         curl \
-        unzip \
+        unzip
+
+# Build tools only needed for pecl — removed after compilation
+RUN apk add --no-cache --virtual .build-deps \
+        autoconf g++ make \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) \
-        gd \
-        bcmath \
-        pcntl \
-        pdo_sqlite \
-        zip \
-        opcache \
+        gd bcmath pcntl pdo_sqlite zip opcache \
     && pecl install igbinary redis \
     && docker-php-ext-enable igbinary redis \
+    && apk del .build-deps \
     && rm -rf /tmp/pear
 
 COPY docker/php/local.ini /usr/local/etc/php/conf.d/local.ini
+
+# Composer from official image (not from vendor stage)
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
