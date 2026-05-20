@@ -14,6 +14,8 @@ class ProcessProjectImageJob implements ShouldQueue
 {
     use Queueable;
 
+    public string $queue = 'images';
+
     public int $tries = 3;
 
     public int $timeout = 60;

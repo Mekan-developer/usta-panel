@@ -16,6 +16,8 @@ class CheckServerJob implements ShouldQueue
 {
     use Queueable;
 
+    public string $queue = 'servers';
+
     public int $tries = 3;
 
     public int $timeout = 8;

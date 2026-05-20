@@ -10,7 +10,9 @@
     "sail": false,
     "skills": [
         "laravel-best-practices",
+        "configuring-horizon",
         "inertia-vue-development",
+        "echo-development",
         "tailwindcss-development"
     ]
 }
