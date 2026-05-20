@@ -21,7 +21,7 @@ if [ "${CONTAINER_ROLE}" = "app" ]; then
     cp -rf /var/www/html/public/. /var/www/public/
     ln -sfn /var/www/html/storage/app/public /var/www/public/storage
 
-    php artisan migrate --force --isolated
+    php artisan migrate --force
     php artisan config:cache
     php artisan route:cache
     php artisan view:cache
