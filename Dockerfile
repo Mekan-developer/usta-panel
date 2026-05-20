@@ -7,7 +7,8 @@ RUN composer install \
         --no-dev \
         --no-scripts \
         --no-autoloader \
-        --prefer-dist
+        --prefer-dist \
+        --ignore-platform-reqs
 
 # ── Stage 2: build frontend assets ────────────────────────────────────────────
 FROM node:20-alpine AS assets
