@@ -39,6 +39,9 @@ RUN apk add --no-cache \
         libzip-dev \
         oniguruma-dev \
         sqlite-dev \
+        autoconf \
+        g++ \
+        make \
         curl \
         unzip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
