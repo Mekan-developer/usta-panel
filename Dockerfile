@@ -1,4 +1,15 @@
-# ── Stage 1: build frontend assets ────────────────────────────────────────────
+# ── Stage 1: Composer dependencies ────────────────────────────────────────────
+FROM composer:2 AS vendor
+
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install \
+        --no-dev \
+        --no-scripts \
+        --no-autoloader \
+        --prefer-dist
+
+# ── Stage 2: build frontend assets ────────────────────────────────────────────
 FROM node:20-alpine AS assets
 
 # VITE_ vars are baked into the bundle at build time
@@ -12,9 +23,11 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --prefer-offline
 COPY . .
+# Ziggy needs vendor/ to generate route definitions
+COPY --from=vendor /app/vendor ./vendor
 RUN npm run build
 
-# ── Stage 2: PHP runtime ───────────────────────────────────────────────────────
+# ── Stage 3: PHP runtime ───────────────────────────────────────────────────────
 FROM php:8.3-fpm-alpine
 
 RUN apk add --no-cache \
@@ -40,18 +53,11 @@ RUN apk add --no-cache \
     && rm -rf /tmp/pear
 
 COPY docker/php/local.ini /usr/local/etc/php/conf.d/local.ini
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-COPY composer.json composer.lock ./
-RUN composer install \
-        --no-dev \
-        --no-scripts \
-        --no-autoloader \
-        --prefer-dist
-
 COPY . .
+COPY --from=vendor /app/vendor ./vendor
 COPY --from=assets /app/public/build ./public/build
 
 RUN composer dump-autoload --optimize \

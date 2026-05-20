@@ -16,13 +16,14 @@ class CheckServerJob implements ShouldQueue
 {
     use Queueable;
 
-    public string $queue = 'servers';
-
     public int $tries = 3;
 
     public int $timeout = 8;
 
-    public function __construct(public readonly Server $server) {}
+    public function __construct(public readonly Server $server)
+    {
+        $this->onQueue('servers');
+    }
 
     public function handle(): void
     {
