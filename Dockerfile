@@ -53,6 +53,7 @@ RUN apk add --no-cache --virtual .build-deps \
     && rm -rf /tmp/pear
 
 COPY docker/php/local.ini /usr/local/etc/php/conf.d/local.ini
+COPY docker/php/zz-fpm.conf /usr/local/etc/php-fpm.d/zz-fpm.conf
 
 # Composer from official image (not from vendor stage)
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
