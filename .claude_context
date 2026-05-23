@@ -1,0 +1,122 @@
+# CLAUDE CONTEXT — usta-panel
+
+Персональная CMS-панель + публичное портфолио + серверный мониторинг.
+Laravel 11 + Inertia 2 + Vue 3 + Pinia + Tailwind v3 + Reverb + Horizon + SQLite + Redis.
+
+---
+
+## Что уже реализовано (кратко)
+
+**Модули:**
+- Аутентификация — полный Breeze flow
+- Серверный мониторинг — CRUD + CheckServerJob (метрики CPU/RAM/disk) + Events
+- Портфолио — CRUD проектов, изображения → WebP Job, мультиязычность
+- Навыки + Опыт — Skills (frontend/backend/tools), Experience с переводами
+- Настройки портфолио — accent, theme, private password
+- CV — загрузка/удаление PDF
+- Трекер обучения — LearningTopic (it/ai/language, studied/current/planned, прогресс)
+- Контактные сообщения — форма на публичном сайте + авто-ответ по email + дашборд
+- Публичное портфолио — Public/Portfolio.vue + разблокировка приватных проектов
+
+**Инфраструктура:**
+- Docker: app, nginx, redis, horizon, scheduler, reverb, certbot
+- URL продакшена: https://it-helper-tm.ru
+- Timezone: Asia/Ashgabat
+
+---
+
+## НЕ ДУБЛИРОВАТЬ
+
+### Паттерны — уже есть, используй существующие:
+- `WithNotification` trait — notifySuccess() / notifyError() — он уже подключён в controllers
+- Repository Pattern — 7 интерфейсов в `app/Contracts/Repositories/`, 7 реализаций в `app/Repositories/`
+- Action Pattern — папки `app/Actions/Portfolio/`, `app/Actions/Server/`, `app/Actions/Profile/`
+- Form Requests — все 18 в `app/Http/Requests/` — создавай отдельные Store/Update, не переиспользуй
+- Enums — ProjectType, ServerStatus, SkillCategory, LearningCategory, LearningStatus
+
+### Компоненты Vue — уже готовы:
+- TextInput, PasswordInput, InputLabel, InputError
+- PrimaryButton, SecondaryButton, DangerButton
+- Modal, Dropdown, DropdownLink, NavLink, ResponsiveNavLink
+- ApplicationLogo, Checkbox
+- PfHero, PfNavBar, PfProjects, PfProjectCarousel, PfProjectModal
+- PfPasswordModal, PfSkills, PfTimeline, PfContact, PfIcon
+
+### Layouts — уже есть:
+- AdminLayout.vue, AuthenticatedLayout.vue, GuestLayout.vue
+
+### Переводы — файлы уже созданы:
+- `lang/ru/` и `lang/tk/` — auth, resources, layout, profile, notifications, learning
+- Добавляй ключи в оба файла одновременно
+
+---
+
+## Соглашения (строго)
+
+**PHP:**
+- Контроллеры — только HTTP (принять → передать → вернуть)
+- ВСЕ запросы к БД — только через Repository
+- Бизнес-логика — Action (одна операция) или Service (если сложнее)
+- Никогда `$request->all()` — только `$request->validated()`
+- Никогда `find()` без обработки null — только `findOrFail()`
+- Никогда `return true/false` из Services — бросать Exception
+- Никогда прямые строки для статусов — только Enum
+- Никогда `session()->flash()` напрямую — только `$this->notifySuccess()`
+- После изменения PHP файлов: `vendor/bin/pint --dirty --format agent`
+
+**Workflow создания фичи:**
+```
+migration → model → factory → repository (interface + impl + bind) →
+service/action → controller → form request → inertia page → test
+```
+
+**Frontend:**
+- `<script setup>` — всегда
+- Pinia для shared state
+- Только Tailwind, никакого custom CSS
+- Никакого hardcode текста — только через vue-i18n
+
+**Тесты:**
+- PHPUnit (не Pest)
+- Команда: `php artisan test --compact tests/Feature/FeatureName.php`
+- После каждого изменения — запускать минимальный набор тестов
+
+---
+
+## Ключевые файлы
+
+| Файл | Назначение |
+|------|-----------|
+| `bootstrap/app.php` | middleware, routing, exceptions |
+| `bootstrap/providers.php` | список провайдеров |
+| `app/Providers/AppServiceProvider.php` | DI bindings для репозиториев |
+| `app/Traits/WithNotification.php` | notifySuccess/Error |
+| `app/Http/Middleware/HandleInertiaRequests.php` | shared Inertia props |
+| `config/horizon.php` | очереди, воркеры |
+| `config/projectSettings.php` | название проекта |
+| `routes/web.php` | все маршруты |
+| `resources/js/app.js` | точка входа Vue |
+
+---
+
+## Что НЕ реализовано (можно делать)
+
+- API v1 (`routes/api/v1.php`, `App\Http\Controllers\Api\V1\`)
+- Email уведомления при ServerWentOffline (Events есть, Mailable — нет)
+- Тесты для Portfolio CRUD, ContactMessage, CV, PortfolioInfo
+- Тесты для Jobs (CheckServerJob, ProcessProjectImageJob)
+- Графики метрик серверов в UI
+
+---
+
+## Docker / Деплой
+
+```bash
+# Локально
+composer run dev
+
+# Продакшен
+./deploy.sh
+```
+
+Образ собирается один раз в `deploy.sh`. Сервисы horizon, scheduler, reverb его переиспользуют.
