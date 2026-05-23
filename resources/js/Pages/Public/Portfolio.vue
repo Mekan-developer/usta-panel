@@ -12,10 +12,11 @@ import PfProjects from '@/Components/Portfolio/PfProjects.vue'
 import PfContact from '@/Components/Portfolio/PfContact.vue'
 
 const props = defineProps({
-    settings:    { type: Object, required: true },
-    skills:      { type: Object, required: true },
-    experiences: { type: Array,  required: true },
-    projects:    { type: Array,  required: true },
+    settings:    { type: Object,  required: true },
+    avatar_url:  { type: String,  default: null },
+    skills:      { type: Object,  required: true },
+    experiences: { type: Array,   required: true },
+    projects:    { type: Array,   required: true },
 })
 
 const { t } = useI18n()
@@ -37,7 +38,7 @@ const copy = computed(() =>
 
     <div class="pf-root">
         <PfNavBar />
-        <PfHero :settings="settings" />
+        <PfHero :settings="settings" :avatar-url="avatar_url" />
         <PfSkills :skills="skills" />
         <PfTimeline :experiences="experiences" />
         <PfProjects :projects="projects" />

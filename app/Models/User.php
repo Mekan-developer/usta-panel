@@ -3,9 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -20,7 +22,19 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'avatar',
     ];
+
+    protected $appends = ['avatar_url'];
+
+    public function avatarUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->avatar
+                ? Storage::disk('public')->url($this->avatar)
+                : null,
+        );
+    }
 
     /**
      * The attributes that should be hidden for serialization.

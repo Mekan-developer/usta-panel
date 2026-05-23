@@ -9,6 +9,13 @@ return [
         'email' => 'Email',
         'save' => 'Ýatda sakla',
         'saved' => 'Ýatda saklandy',
+        'choose_photo' => 'Surat saýla',
+        'upload_photo' => 'Ýükle',
+        'uploading' => 'Ýüklenýär...',
+        'photo_hint' => 'JPG, PNG, GIF ýa-da WebP — 2 MB-dan köp däl',
+        'unverified_email' => 'Email adresiňiz tassyklanmady.',
+        'resend_verification' => 'Gaýtadan iber',
+        'verification_sent' => 'Tassyklama haty iberildi.',
     ],
     'password' => [
         'title' => 'Açar sözi üýtgetmek',

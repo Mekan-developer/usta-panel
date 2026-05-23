@@ -14,8 +14,6 @@ class ProcessProjectImageJob implements ShouldQueue
 {
     use Queueable;
 
-    public string $queue = 'images';
-
     public int $tries = 3;
 
     public int $timeout = 60;
@@ -23,7 +21,9 @@ class ProcessProjectImageJob implements ShouldQueue
     public function __construct(
         public readonly ProjectImage $image,
         public readonly string $tempPath
-    ) {}
+    ) {
+        $this->onQueue('images');
+    }
 
     public function handle(): void
     {

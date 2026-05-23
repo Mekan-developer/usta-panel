@@ -225,8 +225,16 @@ function logout() {
             <!-- Bottom user area -->
             <div class="shrink-0 border-t border-slate-700 p-4">
                 <div class="flex items-center gap-3">
-                    <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-sm font-bold text-white">
-                        {{ $page.props.auth.user?.name?.charAt(0)?.toUpperCase() }}
+                    <div class="h-9 w-9 shrink-0 overflow-hidden rounded-full">
+                        <img
+                            v-if="$page.props.auth.user?.avatar_url"
+                            :src="$page.props.auth.user.avatar_url"
+                            :alt="$page.props.auth.user.name"
+                            class="h-full w-full object-cover"
+                        />
+                        <div v-else class="flex h-full w-full items-center justify-center bg-indigo-600 text-sm font-bold text-white">
+                            {{ $page.props.auth.user?.name?.charAt(0)?.toUpperCase() }}
+                        </div>
                     </div>
                     <div class="min-w-0 flex-1">
                         <p class="truncate text-sm font-medium text-white">{{ $page.props.auth.user?.name }}</p>
@@ -304,8 +312,16 @@ function logout() {
                             @click="userMenuOpen = !userMenuOpen"
                             class="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-slate-300 dark:hover:bg-slate-700"
                         >
-                            <div class="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-600 text-xs font-bold text-white">
-                                {{ $page.props.auth.user?.name?.charAt(0)?.toUpperCase() }}
+                            <div class="h-7 w-7 overflow-hidden rounded-full">
+                                <img
+                                    v-if="$page.props.auth.user?.avatar_url"
+                                    :src="$page.props.auth.user.avatar_url"
+                                    :alt="$page.props.auth.user.name"
+                                    class="h-full w-full object-cover"
+                                />
+                                <div v-else class="flex h-full w-full items-center justify-center bg-indigo-600 text-xs font-bold text-white">
+                                    {{ $page.props.auth.user?.name?.charAt(0)?.toUpperCase() }}
+                                </div>
                             </div>
                             <span class="hidden sm:block max-w-32 truncate">{{ $page.props.auth.user?.name }}</span>
                             <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">

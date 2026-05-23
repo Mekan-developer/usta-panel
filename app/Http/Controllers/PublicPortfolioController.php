@@ -11,6 +11,7 @@ use App\Http\Requests\Contact\StoreContactMessageRequest;
 use App\Http\Requests\Portfolio\UnlockPrivateRequest;
 use App\Models\Experience;
 use App\Models\Project;
+use App\Models\User;
 use App\Services\ContactMessageService;
 use App\Support\PortfolioSettings;
 use Illuminate\Http\JsonResponse;
@@ -33,8 +34,11 @@ class PublicPortfolioController extends Controller
     {
         $settings = $this->resolveSettings();
 
+        $owner = User::first();
+
         return Inertia::render('Public/Portfolio', [
             'settings' => $settings,
+            'avatar_url' => $owner?->avatar_url,
             'skills' => $this->skills->groupedByCategory(),
             'experiences' => $this->experiences->all()->map(fn (Experience $e) => [
                 'id' => $e->id,

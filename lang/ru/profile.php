@@ -9,6 +9,13 @@ return [
         'email' => 'Email',
         'save' => 'Сохранить',
         'saved' => 'Сохранено',
+        'choose_photo' => 'Выбрать фото',
+        'upload_photo' => 'Загрузить',
+        'uploading' => 'Загрузка...',
+        'photo_hint' => 'JPG, PNG, GIF или WebP — не более 2 МБ',
+        'unverified_email' => 'Ваш email не подтверждён.',
+        'resend_verification' => 'Отправить повторно',
+        'verification_sent' => 'Письмо с подтверждением отправлено.',
     ],
     'password' => [
         'title' => 'Изменение пароля',

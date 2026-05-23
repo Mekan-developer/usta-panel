@@ -5,7 +5,8 @@ import { useLocalized } from '@/composables/useLocalized'
 import PfIcon from './PfIcon.vue'
 
 const props = defineProps({
-    settings: { type: Object, required: true },
+    settings:  { type: Object, required: true },
+    avatarUrl: { type: String, default: null },
 })
 
 const { t } = useI18n()
@@ -57,7 +58,13 @@ const socials = computed(() => [
                 <div class="pf-photo-wrap pf-fade-up pf-d2">
                     <div class="pf-photo-glow"></div>
                     <div class="pf-photo-ring">
-                        <div class="pf-photo-core">
+                        <img
+                            v-if="avatarUrl"
+                            :src="avatarUrl"
+                            :alt="name"
+                            class="pf-photo-img"
+                        />
+                        <div v-else class="pf-photo-core">
                             <svg width="54" height="54" viewBox="0 0 54 54" fill="none">
                                 <circle cx="27" cy="19" r="11" fill="currentColor" opacity="0.22" />
                                 <ellipse cx="27" cy="44" rx="19" ry="11" fill="currentColor" opacity="0.1" />
