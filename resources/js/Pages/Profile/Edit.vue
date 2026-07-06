@@ -18,18 +18,10 @@ defineProps({
     <Head :title="t('profile.title')" />
 
     <AdminLayout :title="t('profile.title')">
-        <div class="mx-auto max-w-2xl space-y-5">
-            <div class="rounded-xl bg-white p-6 shadow-sm dark:bg-slate-800">
-                <UpdateProfileInformationForm :must-verify-email="mustVerifyEmail" :status="status" />
-            </div>
-
-            <div class="rounded-xl bg-white p-6 shadow-sm dark:bg-slate-800">
-                <UpdatePasswordForm />
-            </div>
-
-            <div class="rounded-xl bg-white p-6 shadow-sm dark:bg-slate-800">
-                <DeleteUserForm />
-            </div>
+        <div class="mx-auto grid max-w-[1080px] grid-cols-[repeat(auto-fit,minmax(360px,1fr))] items-start gap-[22px]">
+            <UpdateProfileInformationForm :must-verify-email="mustVerifyEmail" :status="status" />
+            <UpdatePasswordForm />
+            <DeleteUserForm />
         </div>
     </AdminLayout>
 </template>

@@ -2,10 +2,10 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { Link, useForm, usePage, router } from '@inertiajs/vue3'
-import { useInputClass } from '@/composables/useInputClass'
+import { useProfileFieldClass } from '@/composables/useProfileFieldClass'
 
 const { t } = useI18n()
-const { inputCls } = useInputClass()
+const { fieldCls } = useProfileFieldClass()
 
 defineProps({
     mustVerifyEmail: { type: Boolean },
@@ -58,40 +58,47 @@ function onAvatarChange(event) {
 </script>
 
 <template>
-    <section>
-        <div class="mb-5">
-            <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ t('profile.info.title') }}</h2>
-            <p class="mt-1 text-sm text-gray-500 dark:text-slate-400">{{ t('profile.info.description') }}</p>
+    <section class="rounded-2xl border border-edge bg-card pb-6 pt-[26px] px-[28px] shadow-[0_1px_2px_rgba(15,19,32,0.04)] dark:border-edge-dark dark:bg-card-dark dark:shadow-[0_1px_0_rgba(255,255,255,0.02)]">
+        <div>
+            <h2 class="text-[15.5px] font-bold text-ink dark:text-ink-dark">{{ t('profile.info.title') }}</h2>
+            <p class="mt-1 text-[12.5px] leading-[1.5] text-subtext dark:text-subtext-dark">{{ t('profile.info.description') }}</p>
         </div>
 
         <!-- Avatar upload -->
-        <div class="mb-6 flex items-center gap-5">
-            <div class="relative">
-                <div
+        <div class="mt-[22px] flex items-center gap-[18px]">
+            <div
+                class="group relative h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-full border-2 border-accent p-0.5"
+                @click="triggerFileInput"
+            >
+                <img
                     v-if="avatarPreview"
-                    class="h-20 w-20 overflow-hidden rounded-full ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-slate-800"
-                >
-                    <img :src="avatarPreview" alt="Avatar" class="h-full w-full object-cover" />
-                </div>
+                    :src="avatarPreview"
+                    alt="Avatar"
+                    class="h-full w-full rounded-full object-cover"
+                />
                 <div
                     v-else
-                    class="flex h-20 w-20 items-center justify-center rounded-full bg-indigo-600 text-2xl font-bold text-white ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-slate-800"
+                    class="flex h-full w-full items-center justify-center rounded-full bg-accent text-xl font-bold text-white"
                 >
                     {{ user.name?.charAt(0)?.toUpperCase() }}
+                </div>
+                <!-- Hover overlay -->
+                <div class="absolute inset-0.5 flex items-center justify-center rounded-full bg-[#0f1320]/45 opacity-0 transition-opacity group-hover:opacity-100">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" stroke="white" stroke-width="2" stroke-linejoin="round" /><circle cx="12" cy="13" r="3.5" stroke="white" stroke-width="2" /></svg>
                 </div>
                 <!-- Upload spinner overlay -->
                 <div
                     v-if="avatarUploading"
-                    class="absolute inset-0 flex items-center justify-center rounded-full bg-black/40"
+                    class="absolute inset-0.5 flex items-center justify-center rounded-full bg-black/40"
                 >
-                    <svg class="h-6 w-6 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+                    <svg class="h-5 w-5 animate-spin text-white" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                     </svg>
                 </div>
             </div>
 
-            <div class="flex flex-col gap-2">
+            <div>
                 <input
                     ref="avatarInput"
                     type="file"
@@ -103,18 +110,18 @@ function onAvatarChange(event) {
                     type="button"
                     :disabled="avatarUploading"
                     @click="triggerFileInput"
-                    class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700"
+                    class="rounded-lg border border-fieldedge bg-field px-3.5 py-2 text-[12.5px] font-semibold text-ink transition-colors hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60 dark:border-fieldedge-dark dark:bg-field-dark dark:text-ink-dark"
                 >
                     {{ avatarUploading ? t('profile.info.uploading') : t('profile.info.choose_photo') }}
                 </button>
-                <p v-if="avatarError" class="text-xs text-red-500">{{ avatarError }}</p>
-                <p class="text-xs text-gray-400 dark:text-slate-500">{{ t('profile.info.photo_hint') }}</p>
+                <p v-if="avatarError" class="mt-1.5 text-xs text-red-500">{{ avatarError }}</p>
+                <p class="mt-1.5 text-[11px] text-fadetext dark:text-fadetext-dark">{{ t('profile.info.photo_hint') }}</p>
             </div>
         </div>
 
-        <form @submit.prevent="form.patch(route('profile.update'))" class="space-y-4">
-            <div>
-                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-slate-300">
+        <form @submit.prevent="form.patch(route('profile.update'))">
+            <div class="mt-[18px]">
+                <label for="name" class="text-[12.5px] font-semibold text-subtext dark:text-subtext-dark">
                     {{ t('profile.info.name') }}
                 </label>
                 <input
@@ -124,13 +131,13 @@ function onAvatarChange(event) {
                     required
                     autofocus
                     autocomplete="name"
-                    :class="inputCls(!!form.errors.name)"
+                    :class="fieldCls(!!form.errors.name)"
                 />
                 <p v-if="form.errors.name" class="mt-1.5 text-xs text-red-500">{{ form.errors.name }}</p>
             </div>
 
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-slate-300">
+            <div class="mt-[18px]">
+                <label for="email" class="text-[12.5px] font-semibold text-subtext dark:text-subtext-dark">
                     {{ t('profile.info.email') }}
                 </label>
                 <input
@@ -139,13 +146,13 @@ function onAvatarChange(event) {
                     type="email"
                     required
                     autocomplete="username"
-                    :class="inputCls(!!form.errors.email)"
+                    :class="fieldCls(!!form.errors.email)"
                 />
                 <p v-if="form.errors.email" class="mt-1.5 text-xs text-red-500">{{ form.errors.email }}</p>
             </div>
 
-            <div v-if="mustVerifyEmail && user.email_verified_at === null">
-                <p class="mt-1 text-sm text-amber-600 dark:text-amber-400">
+            <div v-if="mustVerifyEmail && user.email_verified_at === null" class="mt-[18px]">
+                <p class="text-sm text-amber-600 dark:text-warning">
                     {{ t('profile.info.unverified_email') }}
                     <Link
                         :href="route('verification.send')"
@@ -156,29 +163,30 @@ function onAvatarChange(event) {
                         {{ t('profile.info.resend_verification') }}
                     </Link>
                 </p>
-                <p v-show="status === 'verification-link-sent'" class="mt-1 text-sm font-medium text-green-600 dark:text-green-400">
+                <p v-show="status === 'verification-link-sent'" class="mt-1 text-sm font-medium text-green-500">
                     {{ t('profile.info.verification_sent') }}
                 </p>
             </div>
 
-            <div class="flex items-center gap-4 pt-1">
-                <button
-                    type="submit"
-                    :disabled="form.processing"
-                    class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-slate-800"
-                >
-                    {{ t('profile.info.save') }}
-                </button>
+            <div class="mt-6 flex items-center justify-end gap-3">
                 <Transition
                     enter-active-class="transition ease-in-out duration-200"
                     enter-from-class="opacity-0"
                     leave-active-class="transition ease-in-out duration-200"
                     leave-to-class="opacity-0"
                 >
-                    <span v-if="form.recentlySuccessful" class="text-sm text-green-600 dark:text-green-400">
+                    <span v-if="form.recentlySuccessful" class="flex items-center gap-1 text-[12px] font-semibold text-green-500">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
                         {{ t('profile.info.saved') }}
                     </span>
                 </Transition>
+                <button
+                    type="submit"
+                    :disabled="form.processing"
+                    class="rounded-[9px] bg-accent px-5 py-2.5 text-[13px] font-bold text-white shadow-[0_4px_12px_rgba(124,108,246,0.3)] transition-opacity disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                    {{ t('profile.info.save') }}
+                </button>
             </div>
         </form>
     </section>

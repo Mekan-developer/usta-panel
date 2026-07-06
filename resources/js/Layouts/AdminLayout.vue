@@ -119,7 +119,7 @@ function logout() {
 </script>
 
 <template>
-    <div class="flex h-screen overflow-hidden bg-gray-100 dark:bg-slate-900">
+    <div class="flex h-screen overflow-hidden bg-page font-sans dark:bg-page-dark">
 
         <!-- Mobile overlay -->
         <Transition name="overlay">
@@ -133,60 +133,56 @@ function logout() {
         <!-- Sidebar -->
         <aside
             :class="[
-                'fixed inset-y-0 left-0 z-30 flex w-64 flex-col bg-slate-800 transition-transform duration-300 ease-in-out lg:static lg:z-auto lg:translate-x-0',
+                'fixed inset-y-0 left-0 z-30 flex w-[248px] flex-col border-r border-edge bg-shell transition-transform duration-300 ease-in-out dark:border-edge-dark dark:bg-shell-dark lg:static lg:z-auto lg:translate-x-0',
                 sidebarOpen ? 'translate-x-0' : '-translate-x-full',
             ]"
         >
             <!-- Logo -->
-            <div class="flex h-16 shrink-0 items-center border-b border-slate-700 px-6">
-                <div class="flex items-center gap-2.5">
-                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600">
-                        <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
-                        </svg>
-                    </div>
-                    <span class="text-lg font-bold text-white">{{ appName }}</span>
+            <div class="flex shrink-0 items-center gap-2.5 px-5 pb-6 pt-[22px]">
+                <div class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[10px] bg-gradient-to-br from-[#8b7cf8] to-[#6c5ce7] shadow-[0_4px_12px_rgba(124,108,246,0.35)]">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4z" fill="white" fill-opacity="0.95" /></svg>
                 </div>
+                <span class="text-[15.5px] font-extrabold tracking-[-0.01em] text-ink dark:text-ink-dark">{{ appName }}</span>
             </div>
 
             <!-- Navigation links -->
-            <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-4">
+            <nav class="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-2">
                 <template v-for="item in navItems" :key="item.labelKey">
                     <!-- Item with submenu -->
                     <div v-if="item.children">
                         <button
                             @click="toggleSubmenu(item.labelKey)"
                             :class="[
-                                'group flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
+                                'group flex w-full items-center justify-between gap-[11px] rounded-[10px] px-3 py-2.5 text-[13.5px] transition-colors duration-150',
                                 isCurrentRoute(item.routePattern)
-                                    ? 'bg-indigo-600/20 text-indigo-300'
-                                    : 'text-slate-300 hover:bg-slate-700 hover:text-white',
+                                    ? 'bg-accent/10 font-semibold text-accent dark:bg-accent/[0.16]'
+                                    : 'font-medium text-subtext hover:bg-field dark:text-subtext-dark dark:hover:bg-field-dark',
                             ]"
                         >
-                            <div class="flex items-center gap-3">
-                                <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <div class="flex items-center gap-[11px]">
+                                <svg class="h-[17px] w-[17px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" :d="item.iconPath" />
                                 </svg>
                                 {{ t(item.labelKey) }}
                             </div>
                             <svg
-                                class="h-4 w-4 shrink-0 transition-transform duration-200"
+                                class="h-[14px] w-[14px] shrink-0 text-fadetext transition-transform duration-150 dark:text-fadetext-dark"
                                 :class="openSubmenus.has(item.labelKey) ? 'rotate-180' : ''"
                                 fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
                             >
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
                             </svg>
                         </button>
-                        <div v-if="openSubmenus.has(item.labelKey)" class="mt-1 ml-4 space-y-0.5">
+                        <div v-if="openSubmenus.has(item.labelKey)" class="mt-0.5 ml-4 space-y-0.5">
                             <Link
                                 v-for="child in item.children"
                                 :key="child.routeName"
                                 :href="safeRoute(child.routeName)"
                                 :class="[
-                                    'flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150',
+                                    'flex items-center gap-2 rounded-[10px] px-3 py-2 text-[13.5px] transition-colors duration-150',
                                     isCurrentRoute(child.routePattern)
-                                        ? 'bg-indigo-600 text-white shadow-sm'
-                                        : 'text-slate-400 hover:bg-slate-700 hover:text-white',
+                                        ? 'bg-accent/10 font-semibold text-accent dark:bg-accent/[0.16]'
+                                        : 'font-medium text-subtext hover:bg-field dark:text-subtext-dark dark:hover:bg-field-dark',
                                 ]"
                                 @click="sidebarOpen = false"
                             >
@@ -201,14 +197,14 @@ function logout() {
                         v-else
                         :href="safeRoute(item.routeName)"
                         :class="[
-                            'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
+                            'group flex items-center gap-[11px] rounded-[10px] px-3 py-2.5 text-[13.5px] transition-colors duration-150',
                             isCurrentRoute(item.routePattern)
-                                ? 'bg-indigo-600 text-white shadow-sm'
-                                : 'text-slate-300 hover:bg-slate-700 hover:text-white',
+                                ? 'bg-accent/10 font-semibold text-accent dark:bg-accent/[0.16]'
+                                : 'font-medium text-subtext hover:bg-field dark:text-subtext-dark dark:hover:bg-field-dark',
                         ]"
                         @click="sidebarOpen = false"
                     >
-                        <svg class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <svg class="h-[17px] w-[17px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" :d="item.iconPath" />
                         </svg>
                         <span class="flex-1">{{ t(item.labelKey) }}</span>
@@ -223,33 +219,32 @@ function logout() {
             </nav>
 
             <!-- Bottom user area -->
-            <div class="shrink-0 border-t border-slate-700 p-4">
-                <div class="flex items-center gap-3">
-                    <div class="h-9 w-9 shrink-0 overflow-hidden rounded-full">
-                        <img
-                            v-if="$page.props.auth.user?.avatar_url"
-                            :src="$page.props.auth.user.avatar_url"
-                            :alt="$page.props.auth.user.name"
-                            class="h-full w-full object-cover"
-                        />
-                        <div v-else class="flex h-full w-full items-center justify-center bg-indigo-600 text-sm font-bold text-white">
-                            {{ $page.props.auth.user?.name?.charAt(0)?.toUpperCase() }}
-                        </div>
+            <div class="flex shrink-0 items-center gap-2.5 border-t border-edge px-4 py-3.5 dark:border-edge-dark">
+                <div class="h-9 w-9 shrink-0 overflow-hidden rounded-full border-2 border-accent/40">
+                    <img
+                        v-if="$page.props.auth.user?.avatar_url"
+                        :src="$page.props.auth.user.avatar_url"
+                        :alt="$page.props.auth.user.name"
+                        class="h-full w-full object-cover"
+                    />
+                    <div v-else class="flex h-full w-full items-center justify-center bg-accent text-sm font-bold text-white">
+                        {{ $page.props.auth.user?.name?.charAt(0)?.toUpperCase() }}
                     </div>
-                    <div class="min-w-0 flex-1">
-                        <p class="truncate text-sm font-medium text-white">{{ $page.props.auth.user?.name }}</p>
-                        <p class="truncate text-xs text-slate-400">{{ $page.props.auth.user?.email }}</p>
-                    </div>
-                    <button
-                        @click="logout"
-                        class="shrink-0 rounded-md p-1.5 text-slate-400 transition-colors hover:bg-slate-700 hover:text-white"
-                        :title="t('layout.header.logout')"
-                    >
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-                        </svg>
-                    </button>
                 </div>
+                <div class="min-w-0 flex-1">
+                    <p class="truncate text-[12.5px] font-semibold text-ink dark:text-ink-dark">{{ $page.props.auth.user?.name }}</p>
+                    <p class="truncate text-[11px] text-fadetext dark:text-fadetext-dark">{{ $page.props.auth.user?.email }}</p>
+                </div>
+                <button
+                    @click="logout"
+                    class="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-lg border border-edge text-fadetext transition-colors hover:bg-field dark:border-edge-dark dark:text-fadetext-dark dark:hover:bg-field-dark"
+                    :title="t('layout.header.logout')"
+                >
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 17l5-5-5-5M21 12H9" />
+                    </svg>
+                </button>
             </div>
         </aside>
 
@@ -257,11 +252,11 @@ function logout() {
         <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
 
             <!-- Topbar -->
-            <header class="flex h-16 shrink-0 items-center gap-4 border-b border-gray-200 bg-white px-4 dark:border-slate-700 dark:bg-slate-800 lg:px-6">
+            <header class="sticky top-0 z-[5] flex h-16 shrink-0 items-center gap-4 border-b border-edge bg-shell px-4 dark:border-edge-dark dark:bg-shell-dark lg:px-7">
 
                 <!-- Hamburger (mobile) -->
                 <button
-                    class="rounded-md p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white lg:hidden"
+                    class="rounded-md p-2 text-subtext transition-colors hover:bg-field hover:text-ink dark:text-subtext-dark dark:hover:bg-field-dark dark:hover:text-ink-dark lg:hidden"
                     @click="sidebarOpen = !sidebarOpen"
                 >
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
@@ -270,61 +265,62 @@ function logout() {
                 </button>
 
                 <!-- Page title -->
-                <h1 class="flex-1 text-lg font-semibold text-gray-900 dark:text-white">{{ title }}</h1>
+                <h1 class="flex-1 text-[16px] font-bold text-ink dark:text-ink-dark">{{ title }}</h1>
 
                 <!-- Controls -->
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-3.5">
 
                     <!-- Dark mode toggle -->
                     <button
                         @click="themeStore.toggle"
-                        class="rounded-md p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white"
+                        :class="[
+                            'flex h-[34px] w-[34px] items-center justify-center rounded-[9px] border border-edge bg-field transition-colors dark:border-edge-dark dark:bg-field-dark',
+                            themeStore.isDark ? 'text-[#f4c95d]' : 'text-[#6c5ce7]',
+                        ]"
                         :title="t('layout.header.theme_toggle')"
                     >
-                        <svg v-if="themeStore.isDark" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-                        </svg>
-                        <svg v-else class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-                        </svg>
+                        <svg v-if="themeStore.isDark" width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3v1M12 20v1M4.2 4.2l.7.7M18.4 18.4l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M18.4 5.6l.7-.7" stroke="currentColor" stroke-width="2" stroke-linecap="round" /><circle cx="12" cy="12" r="4.3" stroke="currentColor" stroke-width="2" /></svg>
+                        <svg v-else width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20.5 14.5A8.5 8.5 0 019.5 3.5 8.5 8.5 0 1020.5 14.5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" /></svg>
                     </button>
 
                     <!-- Language switcher -->
-                    <div class="flex items-center gap-0.5 rounded-md border border-gray-200 p-0.5 dark:border-slate-700">
+                    <div class="flex items-center gap-0.5 rounded-[9px] border border-edge bg-field p-0.5 dark:border-edge-dark dark:bg-field-dark">
                         <button
-                            v-for="lang in ['ru', 'tk']"
+                            v-for="lang in ['tk', 'ru']"
                             :key="lang"
                             @click="localeStore.setLocale(lang)"
                             :class="[
-                                'rounded px-2.5 py-1 text-xs font-semibold uppercase transition-colors',
+                                'rounded-[7px] px-2.5 py-[5px] text-[11.5px] font-bold uppercase tracking-wide transition-colors',
                                 localeStore.locale === lang
-                                    ? 'bg-indigo-600 text-white'
-                                    : 'text-gray-500 hover:text-gray-900 dark:text-slate-400 dark:hover:text-white',
+                                    ? 'bg-accent text-white'
+                                    : 'text-subtext hover:text-ink dark:text-subtext-dark dark:hover:text-ink-dark',
                             ]"
                         >
                             {{ lang }}
                         </button>
                     </div>
 
+                    <div class="h-6 w-px bg-edge dark:bg-edge-dark"></div>
+
                     <!-- User dropdown -->
                     <div class="relative">
                         <button
                             @click="userMenuOpen = !userMenuOpen"
-                            class="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-slate-300 dark:hover:bg-slate-700"
+                            class="flex items-center gap-2.5 rounded-md px-1.5 py-1 text-[13px] font-semibold text-ink transition-colors hover:bg-field dark:text-ink-dark dark:hover:bg-field-dark"
                         >
-                            <div class="h-7 w-7 overflow-hidden rounded-full">
+                            <div class="h-[34px] w-[34px] overflow-hidden rounded-full">
                                 <img
                                     v-if="$page.props.auth.user?.avatar_url"
                                     :src="$page.props.auth.user.avatar_url"
                                     :alt="$page.props.auth.user.name"
                                     class="h-full w-full object-cover"
                                 />
-                                <div v-else class="flex h-full w-full items-center justify-center bg-indigo-600 text-xs font-bold text-white">
+                                <div v-else class="flex h-full w-full items-center justify-center bg-accent text-xs font-bold text-white">
                                     {{ $page.props.auth.user?.name?.charAt(0)?.toUpperCase() }}
                                 </div>
                             </div>
                             <span class="hidden sm:block max-w-32 truncate">{{ $page.props.auth.user?.name }}</span>
-                            <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <svg class="h-4 w-4 text-fadetext dark:text-fadetext-dark" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                             </svg>
                         </button>
@@ -332,12 +328,12 @@ function logout() {
                         <Transition name="dropdown">
                             <div
                                 v-if="userMenuOpen"
-                                class="absolute right-0 top-full z-50 mt-1 w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg dark:border-slate-700 dark:bg-slate-800"
+                                class="absolute right-0 top-full z-50 mt-1 w-48 rounded-lg border border-edge bg-card py-1 shadow-lg dark:border-edge-dark dark:bg-card-dark"
                             >
                                 <Link
                                     :href="route('profile.edit')"
                                     @click="userMenuOpen = false"
-                                    class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-slate-700"
+                                    class="flex items-center gap-2 px-4 py-2 text-sm text-subtext hover:bg-field dark:text-subtext-dark dark:hover:bg-field-dark"
                                 >
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
@@ -346,7 +342,7 @@ function logout() {
                                 </Link>
                                 <button
                                     @click="logout"
-                                    class="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+                                    class="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-500/10"
                                 >
                                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />

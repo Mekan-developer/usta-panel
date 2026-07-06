@@ -1,7 +1,8 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { Head } from '@inertiajs/vue3'
 import { useI18n } from 'vue-i18n'
+import { useLocaleStore } from '@/stores/useLocaleStore'
 import { usePortfolioTheme } from '@/composables/usePortfolioTheme'
 
 import PfNavBar from '@/Components/Portfolio/PfNavBar.vue'
@@ -19,7 +20,12 @@ const props = defineProps({
     projects:    { type: Array,   required: true },
 })
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
+const localeStore = useLocaleStore()
+
+watch(() => localeStore.locale, (lang) => {
+    locale.value = lang
+}, { immediate: true })
 
 usePortfolioTheme({
     theme: props.settings['default_theme'] || 'dark',

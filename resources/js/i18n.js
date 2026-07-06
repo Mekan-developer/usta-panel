@@ -272,6 +272,9 @@ const messages = {
             info: {
                 title: 'Информация профиля',
                 description: 'Обновите имя и email вашего аккаунта.',
+                choose_photo: 'Выбрать фото',
+                photo_hint: 'PNG, JPG до 5MB.',
+                uploading: 'Загрузка...',
                 name: 'Имя',
                 email: 'Email',
                 save: 'Сохранить',
@@ -288,6 +291,12 @@ const messages = {
                 confirm: 'Подтвердите пароль',
                 save: 'Сохранить',
                 saved: 'Сохранено',
+                mismatch: 'Пароли не совпадают',
+                strength: {
+                    weak: 'Слабый',
+                    medium: 'Средний',
+                    strong: 'Надёжный',
+                },
             },
             delete: {
                 title: 'Удаление аккаунта',
@@ -296,6 +305,7 @@ const messages = {
                 confirm_title: 'Вы уверены, что хотите удалить аккаунт?',
                 confirm_description: 'После удаления все данные будут уничтожены. Введите пароль для подтверждения.',
                 password_placeholder: 'Введите пароль',
+                confirm_checkbox: 'Я понимаю, что это необратимо',
                 cancel: 'Отмена',
                 confirm_button: 'Удалить аккаунт',
             },
@@ -571,6 +581,9 @@ const messages = {
             info: {
                 title: 'Profil maglumatlary',
                 description: 'Hasabyňyzyň adyny we email adresinizi täzeläň.',
+                choose_photo: 'Surat saýla',
+                photo_hint: 'PNG, JPG, 5MB çenli.',
+                uploading: 'Ýüklenýär...',
                 name: 'At',
                 email: 'Email',
                 save: 'Ýatda sakla',
@@ -587,6 +600,12 @@ const messages = {
                 confirm: 'Açar sözi tassyklaň',
                 save: 'Ýatda sakla',
                 saved: 'Ýatda saklandy',
+                mismatch: 'Parollar gabat gelmeýär',
+                strength: {
+                    weak: 'Gowşak',
+                    medium: 'Orta',
+                    strong: 'Ynamdar',
+                },
             },
             delete: {
                 title: 'Hasaby pozmak',
@@ -595,6 +614,7 @@ const messages = {
                 confirm_title: 'Hasabyňyzy pozmak isleýärsiňizmi?',
                 confirm_description: 'Ähli maglumatlar hemişelik ýok ediler. Tassyklamak üçin açar sözüňizi giriziň.',
                 password_placeholder: 'Açar sözi giriziň',
+                confirm_checkbox: 'Munuň yzyna gaýtarylmajakdygyna düşünýärin',
                 cancel: 'Ýatyr',
                 confirm_button: 'Hasaby poz',
             },

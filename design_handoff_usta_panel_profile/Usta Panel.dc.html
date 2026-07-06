@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  @keyframes fadeIn { from { opacity:0; transform: translateY(4px);} to { opacity:1; transform:translateY(0);} }
+  @keyframes toastIn { from { opacity:0; transform: translate(-50%,8px);} to { opacity:1; transform:translate(-50%,0);} }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:'Manrope',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  ::selection { background: #7c6cf6; color:#fff; }
+  input::placeholder { color: inherit; opacity:.45; }
+</style>
+</helmet>
+
+<div style="{{ rootStyle }}">
+
+  <!-- Sidebar -->
+  <div style="{{ sidebarStyle }}">
+    <div style="display:flex;align-items:center;gap:10px;padding:22px 20px 24px;">
+      <div style="{{ logoBoxStyle }}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6l-8-4z" fill="white" fill-opacity="0.95"/></svg>
+      </div>
+      <div style="{{ logoTextStyle }}">Usta Panel</div>
+    </div>
+
+    <div style="padding:8px 12px;display:flex;flex-direction:column;gap:2px;flex:1;">
+      <sc-for list="{{ navItems }}" as="item" hint-placeholder-count="6">
+        <div onClick="{{ item.onClick }}" style="{{ item.style }}">
+          <span style="{{ item.iconWrapStyle }}" dangerouslySetInnerHTML="{{ item.iconHtml }}"></span>
+          <span style="flex:1">{{ item.label }}</span>
+          <sc-if value="{{ item.hasChevron }}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="{{ item.chevronStyle }}"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="{{ sidebarFooterStyle }}">
+      <img src="{{ avatarSrc }}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid rgba(124,108,246,0.4);" />
+      <div style="flex:1;min-width:0;">
+        <div style="{{ footerNameStyle }}">{{ profileName }}</div>
+        <div style="{{ footerEmailStyle }}">{{ profileEmail }}</div>
+      </div>
+      <button onClick="{{ handleLogout }}" style="{{ logoutBtnStyle }}" title="Logout">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div style="{{ mainColStyle }}">
+
+    <!-- Topbar -->
+    <div style="{{ topbarStyle }}">
+      <div style="{{ pageTitleStyle }}">{{ t.pageTitle }}</div>
+
+      <div style="display:flex;align-items:center;gap:14px;">
+
+        <!-- theme toggle -->
+        <button onClick="{{ toggleTheme }}" style="{{ themeToggleStyle }}" title="Toggle theme">
+          <sc-if value="{{ isDark }}" hint-placeholder-val="{{ true }}">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M12 3v1M12 20v1M4.2 4.2l.7.7M18.4 18.4l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M18.4 5.6l.7-.7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="4.3" stroke="currentColor" stroke-width="2"/></svg>
+          </sc-if>
+          <sc-if value="{{ isLight }}">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M20.5 14.5A8.5 8.5 0 019.5 3.5 8.5 8.5 0 1020.5 14.5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          </sc-if>
+        </button>
+
+        <!-- language switch -->
+        <div style="{{ langWrapStyle }}">
+          <button onClick="{{ setLangTk }}" style="{{ langBtnStyle_tk }}">TK</button>
+          <button onClick="{{ setLangRu }}" style="{{ langBtnStyle_ru }}">RU</button>
+        </div>
+
+        <div style="{{ topDividerStyle }}"></div>
+
+        <div style="display:flex;align-items:center;gap:10px;">
+          <img src="{{ avatarSrc }}" style="width:34px;height:34px;border-radius:50%;object-fit:cover;" />
+          <div style="{{ topNameStyle }}">{{ profileName }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div style="{{ contentScrollStyle }}">
+      <div style="{{ contentInnerStyle }}">
+
+        <!-- Profile info card -->
+        <div style="{{ cardStyle }}">
+          <div style="{{ cardTitleStyle }}">{{ t.profileInfo }}</div>
+          <div style="{{ cardSubStyle }}">{{ t.profileInfoSub }}</div>
+
+          <div style="display:flex;align-items:center;gap:18px;margin-top:22px;">
+            <div style="{{ avatarUploadWrapStyle }}" onClick="{{ triggerFilePick }}">
+              <img src="{{ avatarSrc }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />
+              <div style="{{ avatarOverlayStyle }}">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" stroke="white" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.5" stroke="white" stroke-width="2"/></svg>
+              </div>
+            </div>
+            <input type="file" ref="{{ fileInputRef }}" accept="image/*" style="display:none" onChange="{{ handleFileChange }}" />
+            <div>
+              <button onClick="{{ triggerFilePick }}" style="{{ choosePhotoBtnStyle }}">{{ t.choosePhoto }}</button>
+              <div style="{{ photoHintStyle }}">{{ t.photoHint }}</div>
+            </div>
+          </div>
+
+          <div style="{{ fieldRowStyle }}">
+            <label style="{{ labelStyle }}">{{ t.name }}</label>
+            <input value="{{ profileName }}" onChange="{{ handleNameChange }}" style="{{ inputStyle }}" />
+          </div>
+
+          <div style="{{ fieldRowStyle }}">
+            <label style="{{ labelStyle }}">{{ t.email }}</label>
+            <input value="{{ profileEmail }}" onChange="{{ handleEmailChange }}" style="{{ inputStyle }}" />
+          </div>
+
+          <div style="{{ cardActionsStyle }}">
+            <sc-if value="{{ infoSaved }}">
+              <div style="{{ savedTagStyle }}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                {{ t.saved }}
+              </div>
+            </sc-if>
+            <button onClick="{{ saveInfo }}" style="{{ saveBtnStyle }}">{{ t.save }}</button>
+          </div>
+        </div>
+
+        <!-- Password card -->
+        <div style="{{ cardStyle }}">
+          <div style="{{ cardTitleStyle }}">{{ t.changePassword }}</div>
+          <div style="{{ cardSubStyle }}">{{ t.changePasswordSub }}</div>
+
+          <div style="{{ fieldRowStyle }}">
+            <label style="{{ labelStyle }}">{{ t.currentPassword }}</label>
+            <div style="position:relative;">
+              <input type="{{ curPwType }}" value="{{ curPw }}" onChange="{{ handleCurPwChange }}" style="{{ inputStyle }}" />
+              <button onClick="{{ toggleCurPw }}" style="{{ eyeBtnStyle }}" dangerouslySetInnerHTML="{{ eyeIconHtml_cur }}"></button>
+            </div>
+          </div>
+
+          <div style="{{ fieldRowStyle }}">
+            <label style="{{ labelStyle }}">{{ t.newPassword }}</label>
+            <div style="position:relative;">
+              <input type="{{ newPwType }}" value="{{ newPw }}" onChange="{{ handleNewPwChange }}" style="{{ inputStyle }}" />
+              <button onClick="{{ toggleNewPw }}" style="{{ eyeBtnStyle }}" dangerouslySetInnerHTML="{{ eyeIconHtml_new }}"></button>
+            </div>
+            <sc-if value="{{ showStrength }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ strengthWrapStyle }}">
+                <div style="{{ strengthBarBgStyle }}"><div style="{{ strengthBarFillStyle }}"></div></div>
+                <div style="{{ strengthLabelStyle }}">{{ strengthLabel }}</div>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="{{ fieldRowStyle }}">
+            <label style="{{ labelStyle }}">{{ t.confirmPassword }}</label>
+            <div style="position:relative;">
+              <input type="{{ confirmPwType }}" value="{{ confirmPw }}" onChange="{{ handleConfirmPwChange }}" style="{{ confirmInputStyle }}" />
+              <button onClick="{{ toggleConfirmPw }}" style="{{ eyeBtnStyle }}" dangerouslySetInnerHTML="{{ eyeIconHtml_confirm }}"></button>
+            </div>
+            <sc-if value="{{ showMismatch }}" hint-placeholder-val="{{ false }}">
+              <div style="{{ mismatchStyle }}">{{ t.mismatch }}</div>
+            </sc-if>
+          </div>
+
+          <div style="{{ cardActionsStyle }}">
+            <sc-if value="{{ pwSaved }}">
+              <div style="{{ savedTagStyle }}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                {{ t.saved }}
+              </div>
+            </sc-if>
+            <button onClick="{{ savePassword }}" style="{{ savePwBtnStyle }}">{{ t.save }}</button>
+          </div>
+        </div>
+
+        <!-- Danger zone -->
+        <div style="{{ dangerCardStyle }}">
+          <div style="{{ dangerTitleStyle }}">{{ t.deleteAccount }}</div>
+          <div style="{{ dangerSubStyle }}">{{ t.deleteAccountSub }}</div>
+          <div style="{{ cardActionsStyle }}">
+            <button onClick="{{ openDeleteModal }}" style="{{ deleteBtnStyle }}">{{ t.deleteAccountBtn }}</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete modal -->
+  <sc-if value="{{ deleteModalOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ modalBackdropStyle }}" onClick="{{ closeDeleteModal }}">
+      <div style="{{ modalCardStyle }}" onClick="{{ stopProp }}">
+        <div style="{{ modalIconWrapStyle }}">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div style="{{ modalTitleStyle }}">{{ t.modalTitle }}</div>
+        <div style="{{ modalBodyStyle }}">{{ t.modalBody }}</div>
+        <div style="{{ modalConfirmRowStyle }}">
+          <label style="{{ modalCheckLabelStyle }}">
+            <input type="checkbox" checked="{{ deleteConfirmed }}" onChange="{{ toggleDeleteConfirm }}" style="width:16px;height:16px;accent-color:#ef4444;" />
+            {{ t.modalCheckbox }}
+          </label>
+        </div>
+        <div style="{{ modalActionsStyle }}">
+          <button onClick="{{ closeDeleteModal }}" style="{{ modalCancelBtnStyle }}">{{ t.cancel }}</button>
+          <button onClick="{{ confirmDelete }}" disabled="{{ deleteBtnDisabled }}" style="{{ modalDeleteBtnStyle }}">{{ t.modalConfirm }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- toast -->
+  <sc-if value="{{ toastMsg }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ toastStyle }}">{{ toastMsg }}</div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const COPY = {
+  ru: {
+    dashboard: "Dashboard", servers: "Servers", portfolio: "Portfolio", messages: "Messages",
+    myLearning: "My Learning", profile: "Profile",
+    pageTitle: "Профиль",
+    profileInfo: "Информация профиля",
+    profileInfoSub: "Обновите имя и email вашего аккаунта.",
+    choosePhoto: "Выбрать фото",
+    photoHint: "PNG, JPG до 5MB.",
+    name: "Имя", email: "Email", save: "Сохранить", saved: "Сохранено",
+    changePassword: "Изменение пароля",
+    changePasswordSub: "Используйте длинный случайный пароль для безопасности.",
+    currentPassword: "Текущий пароль", newPassword: "Новый пароль", confirmPassword: "Подтвердите пароль",
+    mismatch: "Пароли не совпадают",
+    strengthWeak: "Слабый", strengthOk: "Средний", strengthStrong: "Надёжный",
+    deleteAccount: "Удаление аккаунта",
+    deleteAccountSub: "После удаления все данные будут безвозвратно уничтожены. Скачайте нужные данные заранее.",
+    deleteAccountBtn: "Удалить аккаунт",
+    modalTitle: "Удалить аккаунт навсегда?",
+    modalBody: "Это действие необратимо. Все ваши серверы, портфолио и сообщения будут удалены без возможности восстановления.",
+    modalCheckbox: "Я понимаю, что это необратимо",
+    cancel: "Отмена", modalConfirm: "Удалить навсегда",
+  },
+  tk: {
+    dashboard: "Dashboard", servers: "Serwerler", portfolio: "Portfolio", messages: "Habarlar",
+    myLearning: "Okuwym", profile: "Profil",
+    pageTitle: "Profil",
+    profileInfo: "Profil maglumaty",
+    profileInfoSub: "Hasabyňyzyň adyny we e-poçtasyny täzeläň.",
+    choosePhoto: "Surat saýla",
+    photoHint: "PNG, JPG, 5MB çenli.",
+    name: "Ady", email: "E-poçta", save: "Ýatda sakla", saved: "Ýatda saklandy",
+    changePassword: "Paroly üýtgetmek",
+    changePasswordSub: "Howpsuzlyk üçin uzyn, tötänleýin parol ulanyň.",
+    currentPassword: "Häzirki parol", newPassword: "Täze parol", confirmPassword: "Paroly tassyklaň",
+    mismatch: "Parollar gabat gelmeýär",
+    strengthWeak: "Gowşak", strengthOk: "Orta", strengthStrong: "Ynamdar",
+    deleteAccount: "Hasaby pozmak",
+    deleteAccountSub: "Pozanyňyzdan soň ähli maglumatlar hemişelik ýok ediler. Gerekli maglumatlary öňünden ýükläň.",
+    deleteAccountBtn: "Hasaby poz",
+    modalTitle: "Hasap hemişelik pozulsynmy?",
+    modalBody: "Bu hereketi yzyna gaýtaryp bolmaz. Ähli serwerleriňiz, portfeliňiz we habarlaryňyz hemişelik pozular.",
+    modalCheckbox: "Munuň yzyna gaýtarylmajakdygyna düşünýärin",
+    cancel: "Ýatyr", modalConfirm: "Hemişelik poz",
+  }
+};
+
+const EYE_OPEN = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/></svg>';
+const EYE_CLOSED = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M17.9 17.9A10.9 10.9 0 0112 19c-7 0-11-7-11-7a20.6 20.6 0 015.1-5.9M9.9 4.2A10 10 0 0112 4c7 0 11 7 11 7a20.7 20.7 0 01-3.2 4.2M14.1 14.1a3 3 0 10-4.2-4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M1 1l22 22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+
+class Component extends DCLogic {
+  state = {
+    theme: 'dark',
+    lang: 'ru',
+    active: 'profile',
+    portfolioOpen: false,
+    profileName: 'Mekan Agamyradov',
+    profileEmail: 'admin@gmail.com',
+    avatarSrc: 'https://i.pravatar.cc/120?img=13',
+    infoSaved: false,
+    curPw: '', newPw: '', confirmPw: '',
+    curPwType: 'password', newPwType: 'password', confirmPwType: 'password',
+    pwSaved: false,
+    deleteModalOpen: false,
+    deleteConfirmed: false,
+    toastMsg: '',
+  };
+
+  fileInputRef = React.createRef();
+  toastTimer = null;
+
+  showToast(msg) {
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.setState({ toastMsg: msg });
+    this.toastTimer = setTimeout(() => this.setState({ toastMsg: '' }), 2200);
+  }
+
+  toggleTheme = () => this.setState(s => ({ theme: s.theme === 'dark' ? 'light' : 'dark' }));
+  setLangRu = () => this.setState({ lang: 'ru' });
+  setLangTk = () => this.setState({ lang: 'tk' });
+
+  setActive = (key) => () => {
+    if (key === 'portfolio') { this.setState(s => ({ portfolioOpen: !s.portfolioOpen, active: 'portfolio' })); return; }
+    this.setState({ active: key });
+  };
+
+  triggerFilePick = () => { if (this.fileInputRef.current) this.fileInputRef.current.click(); };
+  handleFileChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    this.setState({ avatarSrc: url });
+  };
+
+  handleNameChange = (e) => this.setState({ name_draft: e.target.value, profileName: e.target.value });
+  handleEmailChange = (e) => this.setState({ profileEmail: e.target.value });
+  saveInfo = () => { this.setState({ infoSaved: true }); this.showToast('✓'); setTimeout(() => this.setState({ infoSaved: false }), 2000); };
+
+  handleCurPwChange = (e) => this.setState({ curPw: e.target.value });
+  handleNewPwChange = (e) => this.setState({ newPw: e.target.value });
+  handleConfirmPwChange = (e) => this.setState({ confirmPw: e.target.value });
+  toggleCurPw = () => this.setState(s => ({ curPwType: s.curPwType === 'password' ? 'text' : 'password' }));
+  toggleNewPw = () => this.setState(s => ({ newPwType: s.newPwType === 'password' ? 'text' : 'password' }));
+  toggleConfirmPw = () => this.setState(s => ({ confirmPwType: s.confirmPwType === 'password' ? 'text' : 'password' }));
+
+  savePassword = () => {
+    if (this.state.newPw && this.state.newPw !== this.state.confirmPw) return;
+    this.setState({ pwSaved: true, curPw: '', newPw: '', confirmPw: '' });
+    setTimeout(() => this.setState({ pwSaved: false }), 2000);
+  };
+
+  openDeleteModal = () => this.setState({ deleteModalOpen: true, deleteConfirmed: false });
+  closeDeleteModal = () => this.setState({ deleteModalOpen: false });
+  toggleDeleteConfirm = () => this.setState(s => ({ deleteConfirmed: !s.deleteConfirmed }));
+  confirmDelete = () => { this.setState({ deleteModalOpen: false }); this.showToast('Account deletion simulated'); };
+  handleLogout = () => this.showToast('Logout (demo)');
+  stopProp = (e) => e.stopPropagation();
+
+  renderVals() {
+    const s = this.state;
+    const dark = s.theme === 'dark';
+    const t = COPY[s.lang];
+
+    // palette
+    const bg = dark ? '#0f1320' : '#f3f4f8';
+    const sidebarBg = dark ? '#151a2b' : '#ffffff';
+    const cardBg = dark ? '#1b2135' : '#ffffff';
+    const border = dark ? 'rgba(255,255,255,0.07)' : 'rgba(15,19,32,0.08)';
+    const textPrimary = dark ? '#f1f2f6' : '#171a24';
+    const textSecondary = dark ? 'rgba(241,242,246,0.55)' : 'rgba(23,26,36,0.55)';
+    const textMuted = dark ? 'rgba(241,242,246,0.38)' : 'rgba(23,26,36,0.4)';
+    const accent = '#7c6cf6';
+    const accentSoft = dark ? 'rgba(124,108,246,0.16)' : 'rgba(124,108,246,0.1)';
+    const inputBg = dark ? '#242b42' : '#f3f4f8';
+    const inputBorder = dark ? 'rgba(255,255,255,0.09)' : 'rgba(15,19,32,0.1)';
+
+    const rootStyle = `display:flex;width:100%;min-height:100vh;background:${bg};color:${textPrimary};font-family:'Manrope',system-ui,sans-serif;transition:background .25s ease,color .25s ease;`;
+
+    const sidebarStyle = `width:248px;flex-shrink:0;background:${sidebarBg};border-right:1px solid ${border};display:flex;flex-direction:column;position:sticky;top:0;height:100vh;transition:background .25s ease,border-color .25s ease;`;
+
+    const logoBoxStyle = `width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#8b7cf8,#6c5ce7);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(124,108,246,0.35);`;
+    const logoTextStyle = `font-weight:800;font-size:15.5px;letter-spacing:-0.01em;color:${textPrimary};`;
+
+    const navDefs = [
+      { key:'dashboard', label:t.dashboard, chevron:false,
+        icon:{__html:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="2" stroke="currentColor" stroke-width="2"/><rect x="14" y="3" width="7" height="5" rx="2" stroke="currentColor" stroke-width="2"/><rect x="14" y="12" width="7" height="9" rx="2" stroke="currentColor" stroke-width="2"/><rect x="3" y="16" width="7" height="5" rx="2" stroke="currentColor" stroke-width="2"/></svg>'} },
+      { key:'servers', label:t.servers, chevron:false,
+        icon:{__html:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="6" rx="2" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="18" height="6" rx="2" stroke="currentColor" stroke-width="2"/><circle cx="7" cy="7" r="1" fill="currentColor"/><circle cx="7" cy="17" r="1" fill="currentColor"/></svg>'} },
+      { key:'portfolio', label:t.portfolio, chevron:true,
+        icon:{__html:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2" stroke="currentColor" stroke-width="2"/></svg>'} },
+      { key:'messages', label:t.messages, chevron:false,
+        icon:{__html:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v13H7l-3 3V4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>'} },
+      { key:'myLearning', label:t.myLearning, chevron:false,
+        icon:{__html:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M2 6l10-4 10 4-10 4-10-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M6 10v6c0 1.5 3 3 6 3s6-1.5 6-3v-6" stroke="currentColor" stroke-width="2"/></svg>'} },
+      { key:'profile', label:t.profile, chevron:false,
+        icon:{__html:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.3" stroke="currentColor" stroke-width="2"/><path d="M5 20c1.2-4 4.2-6 7-6s5.8 2 7 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'} },
+    ];
+
+    const navItems = navDefs.map(n => {
+      const isActive = s.active === n.key;
+      return {
+        onClick: this.setActive(n.key),
+        style: `display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:13.5px;font-weight:${isActive?600:500};color:${isActive?accent:textSecondary};background:${isActive?accentSoft:'transparent'};transition:background .15s ease,color .15s ease;`,
+        iconWrapStyle: `display:flex;align-items:center;color:${isActive?accent:textSecondary};`,
+        iconHtml: n.icon,
+        label: n.label,
+        hasChevron: n.chevron,
+        chevronStyle: `color:${textMuted};transform:${n.key==='portfolio'&&s.portfolioOpen?'rotate(180deg)':'none'};transition:transform .15s ease;`,
+      };
+    });
+
+    const sidebarFooterStyle = `display:flex;align-items:center;gap:10px;padding:14px 16px;border-top:1px solid ${border};`;
+    const footerNameStyle = `font-size:12.5px;font-weight:600;color:${textPrimary};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;`;
+    const footerEmailStyle = `font-size:11px;color:${textMuted};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;`;
+    const logoutBtnStyle = `width:30px;height:30px;border-radius:8px;border:1px solid ${border};background:transparent;color:${textMuted};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;`;
+
+    const mainColStyle = `flex:1;display:flex;flex-direction:column;min-width:0;`;
+    const topbarStyle = `height:64px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid ${border};background:${sidebarBg};position:sticky;top:0;z-index:5;transition:background .25s ease,border-color .25s ease;`;
+    const pageTitleStyle = `font-size:16px;font-weight:700;color:${textPrimary};`;
+
+    const themeToggleStyle = `width:34px;height:34px;border-radius:9px;border:1px solid ${border};background:${dark?'#242b42':'#f3f4f8'};color:${dark?'#f4c95d':'#6c5ce7'};display:flex;align-items:center;justify-content:center;cursor:pointer;`;
+
+    const langWrapStyle = `display:flex;background:${dark?'#242b42':'#f3f4f8'};border:1px solid ${border};border-radius:9px;padding:2px;gap:2px;`;
+    const langBtnBase = `padding:5px 10px;border:none;border-radius:7px;font-size:11.5px;font-weight:700;cursor:pointer;letter-spacing:.02em;transition:background .15s ease,color .15s ease;`;
+    const langBtnStyle_tk = `${langBtnBase}background:${s.lang==='tk'?accent:'transparent'};color:${s.lang==='tk'?'#fff':textSecondary};`;
+    const langBtnStyle_ru = `${langBtnBase}background:${s.lang==='ru'?accent:'transparent'};color:${s.lang==='ru'?'#fff':textSecondary};`;
+
+    const topDividerStyle = `width:1px;height:24px;background:${border};`;
+    const topNameStyle = `font-size:13px;font-weight:600;color:${textPrimary};`;
+
+    const contentScrollStyle = `flex:1;overflow-y:auto;`;
+    const contentInnerStyle = `max-width:1080px;margin:0 auto;padding:32px 28px 80px;display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:22px;align-items:start;`;
+
+    const cardStyle = `background:${cardBg};border:1px solid ${border};border-radius:16px;padding:26px 28px 24px;animation:fadeIn .3s ease;box-shadow:${dark?'0 1px 0 rgba(255,255,255,0.02)':'0 1px 2px rgba(15,19,32,0.04)'};transition:background .25s ease,border-color .25s ease;`;
+    const cardTitleStyle = `font-size:15.5px;font-weight:700;color:${textPrimary};`;
+    const cardSubStyle = `font-size:12.5px;color:${textSecondary};margin-top:4px;line-height:1.5;`;
+
+    const avatarUploadWrapStyle = `width:64px;height:64px;border-radius:50%;position:relative;cursor:pointer;flex-shrink:0;border:2px solid ${accent};padding:2px;overflow:hidden;`;
+    const avatarOverlayStyle = `position:absolute;inset:2px;border-radius:50%;background:rgba(15,19,32,0.45);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s ease;`;
+
+    const choosePhotoBtnStyle = `background:${inputBg};border:1px solid ${inputBorder};color:${textPrimary};font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:8px;cursor:pointer;`;
+    const photoHintStyle = `font-size:11px;color:${textMuted};margin-top:6px;`;
+
+    const fieldRowStyle = `display:flex;flex-direction:column;gap:6px;margin-top:18px;`;
+    const labelStyle = `font-size:12.5px;font-weight:600;color:${textSecondary};`;
+    const inputStyle = `width:100%;padding:10px 13px;border-radius:9px;border:1px solid ${inputBorder};background:${inputBg};color:${textPrimary};font-size:13.5px;font-family:inherit;outline:none;transition:border-color .15s ease;`;
+
+    const mismatch = s.confirmPw.length > 0 && s.newPw !== s.confirmPw;
+    const confirmInputStyle = inputStyle + (mismatch ? `border-color:#ef4444;` : '');
+
+    const eyeBtnStyle = `position:absolute;right:10px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:${textMuted};cursor:pointer;display:flex;align-items:center;padding:2px;`;
+
+    const pwLen = s.newPw.length;
+    let strengthLabel = '', strengthPct = 0, strengthColor = '#ef4444';
+    if (pwLen > 0) {
+      if (pwLen < 6) { strengthLabel = t.strengthWeak; strengthPct = 30; strengthColor = '#ef4444'; }
+      else if (pwLen < 10) { strengthLabel = t.strengthOk; strengthPct = 65; strengthColor = '#f4b93d'; }
+      else { strengthLabel = t.strengthStrong; strengthPct = 100; strengthColor = '#22c55e'; }
+    }
+    const strengthWrapStyle = `display:flex;align-items:center;gap:10px;margin-top:2px;`;
+    const strengthBarBgStyle = `flex:1;height:4px;border-radius:2px;background:${inputBorder};overflow:hidden;`;
+    const strengthBarFillStyle = `height:100%;width:${strengthPct}%;background:${strengthColor};transition:width .2s ease,background .2s ease;`;
+    const strengthLabelStyle = `font-size:11px;font-weight:600;color:${strengthColor};min-width:52px;`;
+    const mismatchStyle = `font-size:11.5px;color:#ef4444;margin-top:2px;`;
+
+    const cardActionsStyle = `display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-top:24px;`;
+    const savedTagStyle = `display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:#22c55e;`;
+    const saveBtnBase = `padding:10px 20px;border-radius:9px;border:none;font-size:13px;font-weight:700;cursor:pointer;color:#fff;background:${accent};box-shadow:0 4px 12px rgba(124,108,246,0.3);`;
+    const saveBtnStyle = saveBtnBase;
+    const savePwBtnStyle = saveBtnBase;
+
+    const dangerBorder = dark ? 'rgba(239,68,68,0.25)' : 'rgba(239,68,68,0.25)';
+    const dangerCardStyle = `background:${dark?'rgba(239,68,68,0.06)':'rgba(239,68,68,0.04)'};border:1px solid ${dangerBorder};border-radius:16px;padding:26px 28px 24px;animation:fadeIn .3s ease;grid-column:1/-1;`;
+    const dangerTitleStyle = `font-size:15.5px;font-weight:700;color:#ef4444;`;
+    const dangerSubStyle = `font-size:12.5px;color:${textSecondary};margin-top:4px;line-height:1.5;max-width:440px;`;
+    const deleteBtnStyle = `padding:10px 20px;border-radius:9px;border:none;font-size:13px;font-weight:700;cursor:pointer;color:#fff;background:#ef4444;box-shadow:0 4px 12px rgba(239,68,68,0.3);`;
+
+    const modalBackdropStyle = `position:fixed;inset:0;background:rgba(10,12,20,0.55);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:50;animation:fadeIn .15s ease;`;
+    const modalCardStyle = `width:380px;background:${cardBg};border:1px solid ${border};border-radius:16px;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,0.4);`;
+    const modalIconWrapStyle = `width:42px;height:42px;border-radius:11px;background:rgba(239,68,68,0.12);color:#ef4444;display:flex;align-items:center;justify-content:center;`;
+    const modalTitleStyle = `font-size:15.5px;font-weight:700;color:${textPrimary};margin-top:14px;`;
+    const modalBodyStyle = `font-size:12.5px;color:${textSecondary};line-height:1.6;margin-top:8px;`;
+    const modalConfirmRowStyle = `margin-top:16px;`;
+    const modalCheckLabelStyle = `display:flex;align-items:center;gap:9px;font-size:12px;color:${textPrimary};cursor:pointer;`;
+    const modalActionsStyle = `display:flex;gap:10px;margin-top:20px;`;
+    const modalCancelBtnStyle = `flex:1;padding:10px;border-radius:9px;border:1px solid ${inputBorder};background:transparent;color:${textPrimary};font-size:13px;font-weight:600;cursor:pointer;`;
+    const modalDeleteBtnStyle = `flex:1;padding:10px;border-radius:9px;border:none;font-size:13px;font-weight:700;cursor:pointer;color:#fff;background:${s.deleteConfirmed?'#ef4444':'rgba(239,68,68,0.4)'};transition:background .15s ease;`;
+
+    const toastStyle = `position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:${dark?'#242b42':'#171a24'};color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.3);z-index:60;animation:toastIn .2s ease;`;
+
+    return {
+      t, isDark: dark, isLight: !dark,
+      rootStyle, sidebarStyle, logoBoxStyle, logoTextStyle, navItems,
+      sidebarFooterStyle, footerNameStyle, footerEmailStyle, logoutBtnStyle,
+      mainColStyle, topbarStyle, pageTitleStyle,
+      themeToggleStyle, toggleTheme: this.toggleTheme,
+      langWrapStyle, langBtnStyle_tk, langBtnStyle_ru, setLangTk: this.setLangTk, setLangRu: this.setLangRu,
+      topDividerStyle, topNameStyle,
+      avatarSrc: s.avatarSrc, profileName: s.profileName, profileEmail: s.profileEmail,
+      contentScrollStyle, contentInnerStyle,
+      cardStyle, cardTitleStyle, cardSubStyle,
+      avatarUploadWrapStyle, avatarOverlayStyle, triggerFilePick: this.triggerFilePick,
+      fileInputRef: this.fileInputRef, handleFileChange: this.handleFileChange,
+      choosePhotoBtnStyle, photoHintStyle,
+      fieldRowStyle, labelStyle, inputStyle,
+      handleNameChange: this.handleNameChange, handleEmailChange: this.handleEmailChange,
+      cardActionsStyle, infoSaved: s.infoSaved, savedTagStyle, saveBtnStyle, saveInfo: this.saveInfo,
+      curPw: s.curPw, newPw: s.newPw, confirmPw: s.confirmPw,
+      curPwType: s.curPwType, newPwType: s.newPwType, confirmPwType: s.confirmPwType,
+      handleCurPwChange: this.handleCurPwChange, handleNewPwChange: this.handleNewPwChange, handleConfirmPwChange: this.handleConfirmPwChange,
+      toggleCurPw: this.toggleCurPw, toggleNewPw: this.toggleNewPw, toggleConfirmPw: this.toggleConfirmPw,
+      eyeBtnStyle,
+      eyeIconHtml_cur: {__html: s.curPwType === 'password' ? EYE_CLOSED : EYE_OPEN},
+      eyeIconHtml_new: {__html: s.newPwType === 'password' ? EYE_CLOSED : EYE_OPEN},
+      eyeIconHtml_confirm: {__html: s.confirmPwType === 'password' ? EYE_CLOSED : EYE_OPEN},
+      showStrength: pwLen > 0, strengthWrapStyle, strengthBarBgStyle, strengthBarFillStyle, strengthLabelStyle, strengthLabel,
+      showMismatch: mismatch, mismatchStyle,
+      confirmInputStyle,
+      pwSaved: s.pwSaved, savePwBtnStyle, savePassword: this.savePassword,
+      dangerCardStyle, dangerTitleStyle, dangerSubStyle, deleteBtnStyle, openDeleteModal: this.openDeleteModal,
+      deleteModalOpen: s.deleteModalOpen, modalBackdropStyle, modalCardStyle, modalIconWrapStyle, modalTitleStyle, modalBodyStyle,
+      modalConfirmRowStyle, modalCheckLabelStyle, deleteConfirmed: s.deleteConfirmed, toggleDeleteConfirm: this.toggleDeleteConfirm,
+      modalActionsStyle, modalCancelBtnStyle, modalDeleteBtnStyle, closeDeleteModal: this.closeDeleteModal,
+      confirmDelete: this.confirmDelete, deleteBtnDisabled: !s.deleteConfirmed, stopProp: this.stopProp,
+      handleLogout: this.handleLogout,
+      toastMsg: s.toastMsg, toastStyle,
+    };
+  }
+}
+
+</script>
+</body>
+</html>
