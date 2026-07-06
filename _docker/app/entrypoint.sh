@@ -7,6 +7,9 @@ until php -r "new PDO('mysql:host=${DB_HOST:-mysql};port=${DB_PORT:-3306}', '${D
 done
 echo "MySQL ready."
 
+echo "Installing composer dependencies..."
+composer install --no-interaction --optimize-autoloader --no-dev # --no-dev если это продакшн
+
 # ---- ДОБАВЛЕНО: Кэширование роутов и вьюшек (Для Production) ----
 # На локалке (local) кэшировать роуты и конфиги НЕ НАДО, иначе не увидишь изменений в коде.
 # Проверяем среду, и если это production — кэшируем всё для максимальной скорости.
