@@ -10,6 +10,11 @@ services:
       mysql:
         condition: service_healthy
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "cgi-fcgi", "-bind", "-connect", "127.0.0.1:9000"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   nginx:
     image: nginx:1.25-alpine
@@ -22,8 +27,7 @@ services:
       - ./_docker/nginx/ssl:/etc/nginx/ssl
       - ./:/var/www/usta_panel
     depends_on:
-      app:
-        condition: service_healthy
+      - app
     restart: unless-stopped
 
   mysql:
